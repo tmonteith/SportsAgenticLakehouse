@@ -1,0 +1,38 @@
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+*.egg-info/
+build/
+dist/
+
+# Spark and Iceberg local runs
+spark-warehouse/
+metastore_db/
+derby.log
+.local-warehouse/
+_checkpoints/
+
+# Airflow local runs
+airflow.db
+airflow.cfg
+logs/
+
+# Credentials: never commit any of these
+.env
+.env.*
+!.env.example
+key.json
+*-key.json
+*.pem
+*.key
+application_default_credentials.json
+
+# Editors and OS
+.idea/
+.vscode/
+.DS_Store
