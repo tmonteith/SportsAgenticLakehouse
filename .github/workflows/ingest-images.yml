@@ -1,0 +1,87 @@
+name: Ingest Images
+
+# Builds the lakehouse extractor and poller images. Both are always built and pushed
+# together with the same tag, because the infra repo deploys them with one variable
+# (ingest_image_tag).
+
+on:
+  pull_request:
+    branches:
+      - main
+    paths:
+      - 'ingest/**'
+      - '.github/workflows/ingest-images.yml'
+  push:
+    branches:
+      - main
+    paths:
+      - 'ingest/**'
+      - '.github/workflows/ingest-images.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  verify:
+    name: Vet and Test
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ingest
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Setup Go
+        uses: actions/setup-go@v5
+        with:
+          go-version: '1.27.x'
+          cache-dependency-path: ingest/go.sum
+
+      - name: Vet
+        run: go vet ./...
+
+      - name: Unit Tests
+        run: go test ./...
+
+      - name: Build
+        run: go build ./...
+
+  publish:
+    name: Build and Push ${{ matrix.image }} Image
+    runs-on: ubuntu-latest
+    needs: [verify]
+    if: github.event_name == 'push'
+    strategy:
+      matrix:
+        image: [extractor, poller]
+    env:
+      IMAGE: ${{ secrets.OCIR_REGISTRY }}/${{ secrets.OCIR_NAMESPACE }}/sportsagentic/${{ matrix.image }}
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Resolve Image Tag
+        run: echo "IMAGE_TAG=${GITHUB_SHA::7}" >> "$GITHUB_ENV"
+
+      - name: Setup QEMU
+        uses: docker/setup-qemu-action@v3
+
+      - name: Setup Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Log In to OCIR
+        uses: docker/login-action@v3
+        with:
+          registry: ${{ secrets.OCIR_REGISTRY }}
+          username: ${{ secrets.OCIR_USERNAME }}
+          password: ${{ secrets.OCIR_AUTH_TOKEN }}
+
+      - name: Build and Push
+        uses: docker/build-push-action@v6
+        with:
+          context: ingest
+          file: ingest/cmd/${{ matrix.image }}/Dockerfile
+          platforms: linux/amd64,linux/arm64
+          push: true
+          tags: ${{ env.IMAGE }}:${{ env.IMAGE_TAG }}

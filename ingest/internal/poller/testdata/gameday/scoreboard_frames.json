@@ -1,0 +1,100 @@
+[
+{"from":"2024-11-16T18:00:00Z","response":[
+{"id":401628400,"startDate":"2024-11-15T02:00:00.000Z","startTimeTBD":false,"tv":"ESPN","neutralSite":false,"conferenceGame":true,"status":"completed","period":4,"clock":"00:00","situation":null,"possession":null,"lastPlay":"End of 4th Quarter","venue":{"name":"Mountain America Stadium","city":"Tempe","state":"AZ"},"homeTeam":{"id":9,"name":"Arizona State","conference":"Big 12","classification":"fbs","points":24,"lineScores":[7,3,7,7],"winProbability":1.0},"awayTeam":{"id":2306,"name":"Kansas State","conference":"Big 12","classification":"fbs","points":14,"lineScores":[0,7,7,0],"winProbability":0.0},"weather":{"temperature":48.2,"description":"clear sky","windSpeed":6.9,"windDirection":250},"betting":{"spread":-4.5,"overUnder":54.5,"homeMoneyline":-190,"awayMoneyline":160}},
+{"id":401628455,"startDate":"2024-11-16T19:00:00.000Z","startTimeTBD":false,"tv":"FOX","neutralSite":false,"conferenceGame":true,"status":"scheduled","period":null,"clock":null,"situation":null,"possession":null,"lastPlay":null,"venue":{"name":"Folsom Field","city":"Boulder","state":"CO"},"homeTeam":{"id":38,"name":"Colorado","conference":"Big 12","classification":"fbs","points":null,"lineScores":[],"winProbability":null},"awayTeam":{"id":254,"name":"Utah","conference":"Big 12","classification":"fbs","points":null,"lineScores":[],"winProbability":null},"weather":{"temperature":48.2,"description":"clear sky","windSpeed":6.9,"windDirection":250},"betting":{"spread":-4.5,"overUnder":54.5,"homeMoneyline":-190,"awayMoneyline":160}},
+{"id":401628470,"startDate":"2024-11-16T20:00:00.000Z","startTimeTBD":false,"tv":"CBS","neutralSite":false,"conferenceGame":true,"status":"scheduled","period":null,"clock":null,"situation":null,"possession":null,"lastPlay":null,"venue":{"name":"Albertsons Stadium","city":"Boise","state":"ID"},"homeTeam":{"id":68,"name":"Boise State","conference":"Mountain West","classification":"fbs","points":null,"lineScores":[],"winProbability":null},"awayTeam":{"id":36,"name":"Colorado State","conference":"Mountain West","classification":"fbs","points":null,"lineScores":[],"winProbability":null},"weather":{"temperature":48.2,"description":"clear sky","windSpeed":6.9,"windDirection":250},"betting":{"spread":-4.5,"overUnder":54.5,"homeMoneyline":-190,"awayMoneyline":160}}
+]},
+{"from":"2024-11-16T19:04:00Z","response":[
+{
+  "betting": {
+    "spread": -4.5,
+    "overUnder": 54.5,
+    "homeMoneyline": -190,
+    "awayMoneyline": 160
+  },
+  "weather": {
+    "temperature": 48.2,
+    "description": "clear sky",
+    "windSpeed": 6.9,
+    "windDirection": 250
+  },
+  "awayTeam": {
+    "id": 2306,
+    "name": "Kansas State",
+    "conference": "Big 12",
+    "classification": "fbs",
+    "points": 14,
+    "lineScores": [
+      0,
+      7,
+      7,
+      0
+    ],
+    "winProbability": 0.0
+  },
+  "homeTeam": {
+    "id": 9,
+    "name": "Arizona State",
+    "conference": "Big 12",
+    "classification": "fbs",
+    "points": 24,
+    "lineScores": [
+      7,
+      3,
+      7,
+      7
+    ],
+    "winProbability": 1.0
+  },
+  "venue": {
+    "name": "Mountain America Stadium",
+    "city": "Tempe",
+    "state": "AZ"
+  },
+  "lastPlay": "End of 4th Quarter",
+  "possession": null,
+  "situation": null,
+  "clock": "00:00",
+  "period": 4,
+  "status": "completed",
+  "conferenceGame": true,
+  "neutralSite": false,
+  "tv": "ESPN",
+  "startTimeTBD": false,
+  "startDate": "2024-11-15T02:00:00.000Z",
+  "id": 401628400
+},
+{"id":401628455,"startDate":"2024-11-16T19:00:00.000Z","startTimeTBD":false,"tv":"FOX","neutralSite":false,"conferenceGame":true,"status":"in_progress","period":1,"clock":"12:10","situation":"1st & 10 at UTAH 25","possession":"away","lastPlay":"Kickoff, touchback","venue":{"name":"Folsom Field","city":"Boulder","state":"CO"},"homeTeam":{"id":38,"name":"Colorado","conference":"Big 12","classification":"fbs","points":0,"lineScores":[0],"winProbability":0.62},"awayTeam":{"id":254,"name":"Utah","conference":"Big 12","classification":"fbs","points":0,"lineScores":[0],"winProbability":0.38},"weather":{"temperature":48.2,"description":"clear sky","windSpeed":6.9,"windDirection":250},"betting":{"spread":-4.5,"overUnder":54.5,"homeMoneyline":-190,"awayMoneyline":160}},
+{"id":401628470,"startDate":"2024-11-16T20:00:00.000Z","startTimeTBD":false,"tv":"CBS","neutralSite":false,"conferenceGame":true,"status":"scheduled","period":null,"clock":null,"situation":null,"possession":null,"lastPlay":null,"venue":{"name":"Albertsons Stadium","city":"Boise","state":"ID"},"homeTeam":{"id":68,"name":"Boise State","conference":"Mountain West","classification":"fbs","points":null,"lineScores":[],"winProbability":null},"awayTeam":{"id":36,"name":"Colorado State","conference":"Mountain West","classification":"fbs","points":null,"lineScores":[],"winProbability":null},"weather":{"temperature":48.2,"description":"clear sky","windSpeed":6.9,"windDirection":250},"betting":{"spread":-4.5,"overUnder":54.5,"homeMoneyline":-190,"awayMoneyline":160}}
+]},
+{"from":"2024-11-16T19:20:00Z","response":[
+{"id":401628400,"startDate":"2024-11-15T02:00:00.000Z","startTimeTBD":false,"tv":"ESPN","neutralSite":false,"conferenceGame":true,"status":"completed","period":4,"clock":"00:00","situation":null,"possession":null,"lastPlay":"End of 4th Quarter","venue":{"name":"Mountain America Stadium","city":"Tempe","state":"AZ"},"homeTeam":{"id":9,"name":"Arizona State","conference":"Big 12","classification":"fbs","points":24,"lineScores":[7,3,7,7],"winProbability":1.0},"awayTeam":{"id":2306,"name":"Kansas State","conference":"Big 12","classification":"fbs","points":14,"lineScores":[0,7,7,0],"winProbability":0.0},"weather":{"temperature":48.2,"description":"clear sky","windSpeed":6.9,"windDirection":250},"betting":{"spread":-4.5,"overUnder":54.5,"homeMoneyline":-190,"awayMoneyline":160}},
+{"id":401628455,"startDate":"2024-11-16T19:00:00.000Z","startTimeTBD":false,"tv":"FOX","neutralSite":false,"conferenceGame":true,"status":"in_progress","period":1,"clock":"05:31","situation":"1st & 10 at COLO 25","possession":"away","lastPlay":"COLO 18 yd pass TD, kick good","venue":{"name":"Folsom Field","city":"Boulder","state":"CO"},"homeTeam":{"id":38,"name":"Colorado","conference":"Big 12","classification":"fbs","points":7,"lineScores":[7],"winProbability":0.71},"awayTeam":{"id":254,"name":"Utah","conference":"Big 12","classification":"fbs","points":0,"lineScores":[0],"winProbability":0.29},"weather":{"temperature":48.2,"description":"clear sky","windSpeed":6.9,"windDirection":250},"betting":{"spread":-4.5,"overUnder":54.5,"homeMoneyline":-190,"awayMoneyline":160}},
+{"id":401628470,"startDate":"2024-11-16T20:00:00.000Z","startTimeTBD":false,"tv":"CBS","neutralSite":false,"conferenceGame":true,"status":"scheduled","period":null,"clock":null,"situation":null,"possession":null,"lastPlay":null,"venue":{"name":"Albertsons Stadium","city":"Boise","state":"ID"},"homeTeam":{"id":68,"name":"Boise State","conference":"Mountain West","classification":"fbs","points":null,"lineScores":[],"winProbability":null},"awayTeam":{"id":36,"name":"Colorado State","conference":"Mountain West","classification":"fbs","points":null,"lineScores":[],"winProbability":null},"weather":{"temperature":48.2,"description":"clear sky","windSpeed":6.9,"windDirection":250},"betting":{"spread":-4.5,"overUnder":54.5,"homeMoneyline":-190,"awayMoneyline":160}}
+]},
+{"from":"2024-11-16T20:00:00Z","response":[
+{"id":401628400,"startDate":"2024-11-15T02:00:00.000Z","startTimeTBD":false,"tv":"ESPN","neutralSite":false,"conferenceGame":true,"status":"completed","period":4,"clock":"00:00","situation":null,"possession":null,"lastPlay":"End of 4th Quarter","venue":{"name":"Mountain America Stadium","city":"Tempe","state":"AZ"},"homeTeam":{"id":9,"name":"Arizona State","conference":"Big 12","classification":"fbs","points":24,"lineScores":[7,3,7,7],"winProbability":1.0},"awayTeam":{"id":2306,"name":"Kansas State","conference":"Big 12","classification":"fbs","points":14,"lineScores":[0,7,7,0],"winProbability":0.0},"weather":{"temperature":48.2,"description":"clear sky","windSpeed":6.9,"windDirection":250},"betting":{"spread":-4.5,"overUnder":54.5,"homeMoneyline":-190,"awayMoneyline":160}},
+{"id":401628455,"startDate":"2024-11-16T19:00:00.000Z","startTimeTBD":false,"tv":"FOX","neutralSite":false,"conferenceGame":true,"status":"in_progress","period":2,"clock":"10:00","situation":"2nd & 4 at UTAH 41","possession":"home","lastPlay":"UTAH 3 yd run","venue":{"name":"Folsom Field","city":"Boulder","state":"CO"},"homeTeam":{"id":38,"name":"Colorado","conference":"Big 12","classification":"fbs","points":14,"lineScores":[7,7],"winProbability":0.78},"awayTeam":{"id":254,"name":"Utah","conference":"Big 12","classification":"fbs","points":3,"lineScores":[3,0],"winProbability":0.22},"weather":{"temperature":48.2,"description":"clear sky","windSpeed":6.9,"windDirection":250},"betting":{"spread":-4.5,"overUnder":54.5,"homeMoneyline":-190,"awayMoneyline":160}},
+{"id":401628470,"startDate":"2024-11-16T20:00:00.000Z","startTimeTBD":false,"tv":"CBS","neutralSite":false,"conferenceGame":true,"status":"scheduled","period":null,"clock":null,"situation":null,"possession":null,"lastPlay":null,"venue":{"name":"Albertsons Stadium","city":"Boise","state":"ID"},"homeTeam":{"id":68,"name":"Boise State","conference":"Mountain West","classification":"fbs","points":null,"lineScores":[],"winProbability":null},"awayTeam":{"id":36,"name":"Colorado State","conference":"Mountain West","classification":"fbs","points":null,"lineScores":[],"winProbability":null},"weather":{"temperature":48.2,"description":"clear sky","windSpeed":6.9,"windDirection":250},"betting":{"spread":-4.5,"overUnder":54.5,"homeMoneyline":-190,"awayMoneyline":160}}
+]},
+{"from":"2024-11-16T20:06:00Z","response":[
+{"id":401628400,"startDate":"2024-11-15T02:00:00.000Z","startTimeTBD":false,"tv":"ESPN","neutralSite":false,"conferenceGame":true,"status":"completed","period":4,"clock":"00:00","situation":null,"possession":null,"lastPlay":"End of 4th Quarter","venue":{"name":"Mountain America Stadium","city":"Tempe","state":"AZ"},"homeTeam":{"id":9,"name":"Arizona State","conference":"Big 12","classification":"fbs","points":24,"lineScores":[7,3,7,7],"winProbability":1.0},"awayTeam":{"id":2306,"name":"Kansas State","conference":"Big 12","classification":"fbs","points":14,"lineScores":[0,7,7,0],"winProbability":0.0},"weather":{"temperature":48.2,"description":"clear sky","windSpeed":6.9,"windDirection":250},"betting":{"spread":-4.5,"overUnder":54.5,"homeMoneyline":-190,"awayMoneyline":160}},
+{"id":401628455,"startDate":"2024-11-16T19:00:00.000Z","startTimeTBD":false,"tv":"FOX","neutralSite":false,"conferenceGame":true,"status":"in_progress","period":2,"clock":"10:00","situation":"2nd & 4 at UTAH 41","possession":"home","lastPlay":"UTAH 3 yd run","venue":{"name":"Folsom Field","city":"Boulder","state":"CO"},"homeTeam":{"id":38,"name":"Colorado","conference":"Big 12","classification":"fbs","points":14,"lineScores":[7,7],"winProbability":0.78},"awayTeam":{"id":254,"name":"Utah","conference":"Big 12","classification":"fbs","points":3,"lineScores":[3,0],"winProbability":0.22},"weather":{"temperature":48.2,"description":"clear sky","windSpeed":6.9,"windDirection":250},"betting":{"spread":-4.5,"overUnder":54.5,"homeMoneyline":-190,"awayMoneyline":160}},
+{"id":401628470,"startDate":"2024-11-16T20:00:00.000Z","startTimeTBD":false,"tv":"CBS","neutralSite":false,"conferenceGame":true,"status":"in_progress","period":1,"clock":"13:02","situation":"1st & 10 at CSU 30","possession":"away","lastPlay":"Kickoff, touchback","venue":{"name":"Albertsons Stadium","city":"Boise","state":"ID"},"homeTeam":{"id":68,"name":"Boise State","conference":"Mountain West","classification":"fbs","points":0,"lineScores":[0],"winProbability":0.66},"awayTeam":{"id":36,"name":"Colorado State","conference":"Mountain West","classification":"fbs","points":0,"lineScores":[0],"winProbability":0.34},"weather":{"temperature":48.2,"description":"clear sky","windSpeed":6.9,"windDirection":250},"betting":{"spread":-4.5,"overUnder":54.5,"homeMoneyline":-190,"awayMoneyline":160}}
+]},
+{"from":"2024-11-16T21:30:00Z","response":[
+{"id":401628400,"startDate":"2024-11-15T02:00:00.000Z","startTimeTBD":false,"tv":"ESPN","neutralSite":false,"conferenceGame":true,"status":"completed","period":4,"clock":"00:00","situation":null,"possession":null,"lastPlay":"End of 4th Quarter","venue":{"name":"Mountain America Stadium","city":"Tempe","state":"AZ"},"homeTeam":{"id":9,"name":"Arizona State","conference":"Big 12","classification":"fbs","points":24,"lineScores":[7,3,7,7],"winProbability":1.0},"awayTeam":{"id":2306,"name":"Kansas State","conference":"Big 12","classification":"fbs","points":14,"lineScores":[0,7,7,0],"winProbability":0.0},"weather":{"temperature":48.2,"description":"clear sky","windSpeed":6.9,"windDirection":250},"betting":{"spread":-4.5,"overUnder":54.5,"homeMoneyline":-190,"awayMoneyline":160}},
+{"id":401628455,"startDate":"2024-11-16T19:00:00.000Z","startTimeTBD":false,"tv":"FOX","neutralSite":false,"conferenceGame":true,"status":"in_progress","period":4,"clock":"02:00","situation":"3rd & 6 at COLO 44","possession":"home","lastPlay":"COLO 2 yd run","venue":{"name":"Folsom Field","city":"Boulder","state":"CO"},"homeTeam":{"id":38,"name":"Colorado","conference":"Big 12","classification":"fbs","points":28,"lineScores":[7,7,7,7],"winProbability":0.83},"awayTeam":{"id":254,"name":"Utah","conference":"Big 12","classification":"fbs","points":24,"lineScores":[3,7,7,7],"winProbability":0.17},"weather":{"temperature":48.2,"description":"clear sky","windSpeed":6.9,"windDirection":250},"betting":{"spread":-4.5,"overUnder":54.5,"homeMoneyline":-190,"awayMoneyline":160}},
+{"id":401628470,"startDate":"2024-11-16T20:00:00.000Z","startTimeTBD":false,"tv":"CBS","neutralSite":false,"conferenceGame":true,"status":"in_progress","period":2,"clock":"01:12","situation":"2nd & 8 at BSU 37","possession":"away","lastPlay":"CSU 9 yd pass","venue":{"name":"Albertsons Stadium","city":"Boise","state":"ID"},"homeTeam":{"id":68,"name":"Boise State","conference":"Mountain West","classification":"fbs","points":10,"lineScores":[7,3],"winProbability":0.72},"awayTeam":{"id":36,"name":"Colorado State","conference":"Mountain West","classification":"fbs","points":7,"lineScores":[0,7],"winProbability":0.28},"weather":{"temperature":48.2,"description":"clear sky","windSpeed":6.9,"windDirection":250},"betting":{"spread":-4.5,"overUnder":54.5,"homeMoneyline":-190,"awayMoneyline":160}}
+]},
+{"from":"2024-11-16T22:10:00Z","response":[
+{"id":401628400,"startDate":"2024-11-15T02:00:00.000Z","startTimeTBD":false,"tv":"ESPN","neutralSite":false,"conferenceGame":true,"status":"completed","period":4,"clock":"00:00","situation":null,"possession":null,"lastPlay":"End of 4th Quarter","venue":{"name":"Mountain America Stadium","city":"Tempe","state":"AZ"},"homeTeam":{"id":9,"name":"Arizona State","conference":"Big 12","classification":"fbs","points":24,"lineScores":[7,3,7,7],"winProbability":1.0},"awayTeam":{"id":2306,"name":"Kansas State","conference":"Big 12","classification":"fbs","points":14,"lineScores":[0,7,7,0],"winProbability":0.0},"weather":{"temperature":48.2,"description":"clear sky","windSpeed":6.9,"windDirection":250},"betting":{"spread":-4.5,"overUnder":54.5,"homeMoneyline":-190,"awayMoneyline":160}},
+{"id":401628455,"startDate":"2024-11-16T19:00:00.000Z","startTimeTBD":false,"tv":"FOX","neutralSite":false,"conferenceGame":true,"status":"completed","period":4,"clock":"00:00","situation":null,"possession":null,"lastPlay":"End of 4th Quarter","venue":{"name":"Folsom Field","city":"Boulder","state":"CO"},"homeTeam":{"id":38,"name":"Colorado","conference":"Big 12","classification":"fbs","points":31,"lineScores":[7,7,7,10],"winProbability":1.0},"awayTeam":{"id":254,"name":"Utah","conference":"Big 12","classification":"fbs","points":24,"lineScores":[3,7,7,7],"winProbability":0.0},"weather":{"temperature":48.2,"description":"clear sky","windSpeed":6.9,"windDirection":250},"betting":{"spread":-4.5,"overUnder":54.5,"homeMoneyline":-190,"awayMoneyline":160}},
+{"id":401628470,"startDate":"2024-11-16T20:00:00.000Z","startTimeTBD":false,"tv":"CBS","neutralSite":false,"conferenceGame":true,"status":"in_progress","period":3,"clock":"08:45","situation":"1st & 10 at BSU 22","possession":"home","lastPlay":"BSU 34 yd run","venue":{"name":"Albertsons Stadium","city":"Boise","state":"ID"},"homeTeam":{"id":68,"name":"Boise State","conference":"Mountain West","classification":"fbs","points":17,"lineScores":[7,3,7],"winProbability":0.84},"awayTeam":{"id":36,"name":"Colorado State","conference":"Mountain West","classification":"fbs","points":10,"lineScores":[0,7,3],"winProbability":0.16},"weather":{"temperature":48.2,"description":"clear sky","windSpeed":6.9,"windDirection":250},"betting":{"spread":-4.5,"overUnder":54.5,"homeMoneyline":-190,"awayMoneyline":160}}
+]},
+{"from":"2024-11-16T23:40:00Z","response":[
+{"id":401628400,"startDate":"2024-11-15T02:00:00.000Z","startTimeTBD":false,"tv":"ESPN","neutralSite":false,"conferenceGame":true,"status":"completed","period":4,"clock":"00:00","situation":null,"possession":null,"lastPlay":"End of 4th Quarter","venue":{"name":"Mountain America Stadium","city":"Tempe","state":"AZ"},"homeTeam":{"id":9,"name":"Arizona State","conference":"Big 12","classification":"fbs","points":24,"lineScores":[7,3,7,7],"winProbability":1.0},"awayTeam":{"id":2306,"name":"Kansas State","conference":"Big 12","classification":"fbs","points":14,"lineScores":[0,7,7,0],"winProbability":0.0},"weather":{"temperature":48.2,"description":"clear sky","windSpeed":6.9,"windDirection":250},"betting":{"spread":-4.5,"overUnder":54.5,"homeMoneyline":-190,"awayMoneyline":160}},
+{"id":401628455,"startDate":"2024-11-16T19:00:00.000Z","startTimeTBD":false,"tv":"FOX","neutralSite":false,"conferenceGame":true,"status":"completed","period":4,"clock":"00:00","situation":null,"possession":null,"lastPlay":"End of 4th Quarter","venue":{"name":"Folsom Field","city":"Boulder","state":"CO"},"homeTeam":{"id":38,"name":"Colorado","conference":"Big 12","classification":"fbs","points":31,"lineScores":[7,7,7,10],"winProbability":1.0},"awayTeam":{"id":254,"name":"Utah","conference":"Big 12","classification":"fbs","points":24,"lineScores":[3,7,7,7],"winProbability":0.0},"weather":{"temperature":48.2,"description":"clear sky","windSpeed":6.9,"windDirection":250},"betting":{"spread":-4.5,"overUnder":54.5,"homeMoneyline":-190,"awayMoneyline":160}},
+{"id":401628470,"startDate":"2024-11-16T20:00:00.000Z","startTimeTBD":false,"tv":"CBS","neutralSite":false,"conferenceGame":true,"status":"completed","period":4,"clock":"00:00","situation":null,"possession":null,"lastPlay":"End of 4th Quarter","venue":{"name":"Albertsons Stadium","city":"Boise","state":"ID"},"homeTeam":{"id":68,"name":"Boise State","conference":"Mountain West","classification":"fbs","points":27,"lineScores":[7,3,7,10],"winProbability":1.0},"awayTeam":{"id":36,"name":"Colorado State","conference":"Mountain West","classification":"fbs","points":20,"lineScores":[0,7,3,10],"winProbability":0.0},"weather":{"temperature":48.2,"description":"clear sky","windSpeed":6.9,"windDirection":250},"betting":{"spread":-4.5,"overUnder":54.5,"homeMoneyline":-190,"awayMoneyline":160}}
+]}
+]

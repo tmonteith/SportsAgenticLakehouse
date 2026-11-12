@@ -1,0 +1,110 @@
+[
+ {
+  "key": "401628400",
+  "fetched_at": "2024-11-16T18:45:00Z",
+  "status": "completed",
+  "period": 4,
+  "clock": "00:00",
+  "home_points": 24,
+  "away_points": 14
+ },
+ {
+  "key": "401628455",
+  "fetched_at": "2024-11-16T18:45:00Z",
+  "status": "scheduled",
+  "period": null,
+  "clock": null,
+  "home_points": null,
+  "away_points": null
+ },
+ {
+  "key": "401628470",
+  "fetched_at": "2024-11-16T18:45:00Z",
+  "status": "scheduled",
+  "period": null,
+  "clock": null,
+  "home_points": null,
+  "away_points": null
+ },
+ {
+  "key": "401628455",
+  "fetched_at": "2024-11-16T19:04:00Z",
+  "status": "in_progress",
+  "period": 1,
+  "clock": "12:10",
+  "home_points": 0,
+  "away_points": 0
+ },
+ {
+  "key": "401628455",
+  "fetched_at": "2024-11-16T19:20:00Z",
+  "status": "in_progress",
+  "period": 1,
+  "clock": "05:31",
+  "home_points": 7,
+  "away_points": 0
+ },
+ {
+  "key": "401628455",
+  "fetched_at": "2024-11-16T20:00:00Z",
+  "status": "in_progress",
+  "period": 2,
+  "clock": "10:00",
+  "home_points": 14,
+  "away_points": 3
+ },
+ {
+  "key": "401628470",
+  "fetched_at": "2024-11-16T20:06:00Z",
+  "status": "in_progress",
+  "period": 1,
+  "clock": "13:02",
+  "home_points": 0,
+  "away_points": 0
+ },
+ {
+  "key": "401628455",
+  "fetched_at": "2024-11-16T21:30:00Z",
+  "status": "in_progress",
+  "period": 4,
+  "clock": "02:00",
+  "home_points": 28,
+  "away_points": 24
+ },
+ {
+  "key": "401628470",
+  "fetched_at": "2024-11-16T21:30:00Z",
+  "status": "in_progress",
+  "period": 2,
+  "clock": "01:12",
+  "home_points": 10,
+  "away_points": 7
+ },
+ {
+  "key": "401628455",
+  "fetched_at": "2024-11-16T22:10:00Z",
+  "status": "completed",
+  "period": 4,
+  "clock": "00:00",
+  "home_points": 31,
+  "away_points": 24
+ },
+ {
+  "key": "401628470",
+  "fetched_at": "2024-11-16T22:10:00Z",
+  "status": "in_progress",
+  "period": 3,
+  "clock": "08:45",
+  "home_points": 17,
+  "away_points": 10
+ },
+ {
+  "key": "401628470",
+  "fetched_at": "2024-11-16T23:40:00Z",
+  "status": "completed",
+  "period": 4,
+  "clock": "00:00",
+  "home_points": 27,
+  "away_points": 20
+ }
+]
