@@ -1,0 +1,73 @@
+name: Drain Image
+
+# Tests the PySpark jobs and builds the streaming drain image (sportsagentic/spark-drain,
+# docker/drain/Dockerfile). The image carries jobs/drain.py and jobs/sa_lakehouse, so any
+# change under jobs/ rebuilds it. Pushed on main only, tagged with the short commit SHA.
+
+on:
+  pull_request:
+    branches:
+      - main
+    paths:
+      - 'jobs/**'
+      - 'docker/drain/**'
+      - 'scripts/test.sh'
+      - '.github/workflows/drain-image.yml'
+  push:
+    branches:
+      - main
+    paths:
+      - 'jobs/**'
+      - 'docker/drain/**'
+      - 'scripts/test.sh'
+      - '.github/workflows/drain-image.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  verify:
+    name: Spark Tests
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Run Tests
+        run: scripts/test.sh
+
+  publish:
+    name: Build and Push spark-drain Image
+    runs-on: ubuntu-latest
+    needs: [verify]
+    if: github.event_name == 'push'
+    env:
+      IMAGE: ${{ secrets.OCIR_REGISTRY }}/${{ secrets.OCIR_NAMESPACE }}/sportsagentic/spark-drain
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Resolve Image Tag
+        run: echo "IMAGE_TAG=${GITHUB_SHA::7}" >> "$GITHUB_ENV"
+
+      - name: Setup QEMU
+        uses: docker/setup-qemu-action@v3
+
+      - name: Setup Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Log In to OCIR
+        uses: docker/login-action@v3
+        with:
+          registry: ${{ secrets.OCIR_REGISTRY }}
+          username: ${{ secrets.OCIR_USERNAME }}
+          password: ${{ secrets.OCIR_AUTH_TOKEN }}
+
+      - name: Build and Push
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          file: docker/drain/Dockerfile
+          platforms: linux/amd64,linux/arm64
+          push: true
+          tags: ${{ env.IMAGE }}:${{ env.IMAGE_TAG }}
