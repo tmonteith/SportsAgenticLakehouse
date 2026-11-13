@@ -137,3 +137,20 @@ def test_reload_clears_and_loads_everything_again(clean_catalog, tmp_path):
     assert s["cleared_rows"] == {"sa_catalog.bronze._load_state": 3, "sa_catalog.bronze.api_responses_raw": 3}
     assert spark.table("sa_catalog.bronze.api_responses_raw").count() == 3
     assert spark.table("sa_catalog.bronze._load_state").count() == 3
+
+
+def test_explode_payload_drops_the_response_body(spark):
+    from pyspark.sql import types as T
+
+    from sa_lakehouse.landing import explode_payload
+
+    fetched = datetime(2025, 9, 1, 3, 30)
+    bronze = spark.createDataFrame(
+        [("plays", "f1", fetched, '[{"id": "1"}, {"id": "2"}]'), ("plays", "f2", fetched, "not json")],
+        "endpoint string, _landing_file string, fetched_at timestamp, response_json string",
+    )
+    schema = T.StructType([T.StructField("id", T.StringType())])
+    records, bad = explode_payload(bronze, schema, table_name="silver.plays", source="cfbd:plays")
+    assert "response_json" not in records.columns
+    assert sorted(r.r.id for r in records.collect()) == ["1", "2"]
+    assert [r.record_key for r in bad.collect()] == ["f2"]
