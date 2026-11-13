@@ -9,6 +9,7 @@
 #   JOBS_VERSION       published code version (default: this checkout's git short SHA)
 #   ICEBERG_CATALOG    catalog name (default sa_catalog)
 #   SA_STAGING_BUCKET  optional --staging-bucket (default: Dataproc's own staging bucket)
+#   SA_MAX_EXECUTORS   executor cap (default 2: 12 DCUs with the driver)
 #
 # Catalog properties come from sa_lakehouse.config.catalog_conf (the single H2 source);
 # GCP_PROJECT and ICEBERG_CATALOG reach the driver through spark.dataproc.driverEnv.*.
@@ -44,6 +45,10 @@ settings = settings_from_env()
 props = dict(catalog_conf(settings))
 props["spark.dataproc.driverEnv.GCP_PROJECT"] = settings.gcp_project
 props["spark.dataproc.driverEnv.ICEBERG_CATALOG"] = settings.catalog
+# Hold every batch at the plan's 12 DCUs (driver + 2 executors, 4 vCPUs each). Without a cap,
+# dynamic allocation scales to the project's 32-vCPU CPUS_ALL_REGIONS quota, and the next batch
+# cannot start until those workers are released. Override with SA_MAX_EXECUTORS.
+props["spark.dynamicAllocation.maxExecutors"] = os.environ.get("SA_MAX_EXECUTORS", "2")
 bad = [k for k, v in props.items() if "#" in k + v]
 if bad:
     raise SystemExit(f"'#' in properties: {bad}")
