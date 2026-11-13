@@ -185,3 +185,26 @@ def test_play_type_enum(spark):
     df = spark.createDataFrame([(k,) for k in raws], "play_type_raw STRING")
     got = dict(df.selectExpr("play_type_raw", f"{play_type_sql()} AS t").collect())
     assert got == raws
+
+
+def test_aliases_load_from_the_published_zip(tmp_path):
+    """--py-files sa_lakehouse.zip: the resource is read from inside the archive."""
+    import os
+    import subprocess
+    import sys
+    import zipfile
+
+    jobs = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+    zpath = tmp_path / "sa_lakehouse.zip"
+    with zipfile.ZipFile(zpath, "w") as zf:
+        for top in ("sa_lakehouse", "resources"):
+            for dirpath, dirnames, files in os.walk(os.path.join(jobs, top)):
+                dirnames[:] = [d for d in dirnames if d != "__pycache__"]
+                for f in files:
+                    zf.write(os.path.join(dirpath, f), os.path.relpath(os.path.join(dirpath, f), jobs))
+    env = dict(os.environ)
+    env["PYTHONPATH"] = os.pathsep.join([str(zpath)] + [p for p in env.get("PYTHONPATH", "").split(os.pathsep) if p and os.path.abspath(p) != jobs])
+    code = "import sa_lakehouse.teams as t; assert '.zip' in t.__file__, t.__file__; print(len(t.load_go_aliases()))"
+    out = subprocess.run([sys.executable, "-c", code], env=env, cwd=str(tmp_path), capture_output=True, text=True)
+    assert out.returncode == 0, out.stderr
+    assert int(out.stdout) > 50
