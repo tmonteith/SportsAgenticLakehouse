@@ -1,0 +1,7 @@
+# BuildKit reads this for docker/drain/Dockerfile (build context = repo root).
+*
+!jobs/drain.py
+!jobs/sa_lakehouse/
+!docker/drain/jars.txt
+**/__pycache__
+**/*.pyc
