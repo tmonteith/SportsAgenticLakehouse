@@ -1,0 +1,2 @@
+# Helper package imported by the DAG files; nothing in it defines a DAG.
+lakehouse/

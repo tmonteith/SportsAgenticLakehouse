@@ -4,9 +4,13 @@
 // Nightly (CronJob):  extractor --season=current --weeks=recent --force
 // Backfill (Job):     extractor --season=2023,2024,2025 --weeks=all
 //
+// With --completion-marker=<name> (the nightly CronJob passes extractor-nightly), a
+// successful run also writes gs://<bucket>/_markers/<name>/<YYYY-MM-DD>.json (the
+// America/Denver date the run started), which Airflow's cfb_nightly DAG waits for.
+//
 // Environment: CFBD_API_KEY (required), GCP_PROJECT (landing bucket
 // ${GCP_PROJECT}-sa-landing unless --bucket is set), GOOGLE_APPLICATION_CREDENTIALS
-// (Application Default Credentials).
+// (Application Default Credentials), IMAGE_TAG (optional; recorded in the marker).
 package main
 
 import (
@@ -26,6 +30,7 @@ import (
 	"github.com/tmonteith/SportsAgenticLakehouse/ingest/internal/clock"
 	"github.com/tmonteith/SportsAgenticLakehouse/ingest/internal/extractor"
 	"github.com/tmonteith/SportsAgenticLakehouse/ingest/internal/landing"
+	"github.com/tmonteith/SportsAgenticLakehouse/ingest/internal/marker"
 )
 
 func main() { os.Exit(run(os.Args[1:])) }
@@ -43,6 +48,7 @@ func run(args []string) int {
 	minInterval := fs.Duration("min-interval", time.Second, "minimum time between CFBD requests")
 	maxRetries := fs.Int("max-retries", 5, "retries per request on 429, 5xx or network errors")
 	timeout := fs.Duration("timeout", 2*time.Minute, "HTTP timeout per CFBD request (play-by-play weeks are large)")
+	completionMarker := fs.String("completion-marker", "", "after a successful run, write _markers/<name>/<America/Denver date>.json (empty: no marker)")
 	if err := fs.Parse(args); err != nil {
 		return 2
 	}
@@ -81,6 +87,11 @@ func run(args []string) int {
 	if err != nil {
 		return fail("config", err)
 	}
+	if *completionMarker != "" {
+		if err := marker.ValidateName(*completionMarker); err != nil {
+			return fail("config", err)
+		}
+	}
 	if *recentDays < 1 {
 		return fail("config", fmt.Errorf("--recent-days must be at least 1"))
 	}
@@ -112,13 +123,25 @@ func run(args []string) int {
 		names[i] = ep.Name
 	}
 	log.Info("extractor_start", "bucket", *bucket, "seasons", seasons, "weeks", weekSpec.String(),
-		"season_types", types, "endpoints", strings.Join(names, ","), "force", *force, "dry_run", *dryRun)
+		"season_types", types, "endpoints", strings.Join(names, ","), "force", *force, "dry_run", *dryRun,
+		"completion_marker", *completionMarker)
 
 	started := time.Now()
 	sum, runErr := extractor.New(caller, store, clock.Real{}, log).Run(ctx, cfg)
-	log.Info("extractor_summary", "summary", sum, "api", caller.Stats(), "duration_s", int(time.Since(started).Seconds()))
+	finished := time.Now()
+	stats := caller.Stats()
+	log.Info("extractor_summary", "summary", sum, "api", stats, "duration_s", int(finished.Sub(started).Seconds()))
 	if runErr != nil {
 		log.Error("extractor_failed", "error", runErr.Error())
+	}
+
+	// Never a marker for a failed or dry run (marker.AfterRun checks both).
+	body := marker.NewBody(started, finished, sum.Total.Landed, stats.Calls, os.Getenv("IMAGE_TAG"))
+	if _, err := marker.AfterRun(ctx, store, *completionMarker, started, *dryRun, runErr, body, log); err != nil {
+		log.Error("marker_failed", "error", err.Error())
+		return 1
+	}
+	if runErr != nil {
 		return 1
 	}
 	return 0
