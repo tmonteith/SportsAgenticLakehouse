@@ -2,6 +2,7 @@
 # Run the jobs test suite in the same Spark the drain image uses (contract H1):
 # apache/spark 3.5.7 (Java 17, Python 3), plus the Iceberg Spark runtime jar, against a
 # local Iceberg catalog. Needs Docker. Jars are cached in .cache/jars (git-ignored).
+# dags/ and scripts/ are mounted read-only for the batch-spec drift test (test_batch_spec.py).
 #
 # Usage: scripts/test.sh [pytest args...]
 set -euo pipefail
@@ -30,6 +31,8 @@ exec docker run --rm \
   -e PYTHONDONTWRITEBYTECODE=1 \
   -e SA_TEST_JARS="/jars/$RUNTIME_JAR" \
   -v "$ROOT/jobs:/work/jobs" \
+  -v "$ROOT/dags:/work/dags:ro" \
+  -v "$ROOT/scripts:/work/scripts:ro" \
   -v "$JAR_DIR:/jars:ro" \
   -w /work/jobs \
   --entrypoint bash \

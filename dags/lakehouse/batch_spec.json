@@ -1,0 +1,39 @@
+{
+  "pyspark_batch": {
+    "main_python_file_uri": "gs://${GCP_PROJECT}-sa-jobs/jobs/${JOBS_REF}/${JOB}.py",
+    "args": "${ARGS}",
+    "python_file_uris": [
+      "gs://${GCP_PROJECT}-sa-jobs/jobs/${JOBS_REF}/sa_lakehouse.zip"
+    ],
+    "jar_file_uris": [
+      "gs://${GCP_PROJECT}-sa-jobs/jars/iceberg-spark-runtime-3.5_2.13-1.10.2.jar",
+      "gs://${GCP_PROJECT}-sa-jobs/jars/iceberg-gcp-bundle-1.10.2.jar"
+    ]
+  },
+  "runtime_config": {
+    "version": "2.3",
+    "properties": {
+      "spark.sql.extensions": "org.apache.iceberg.spark.extensions.IcebergSparkSessionExtensions",
+      "spark.sql.catalog.sa_catalog": "org.apache.iceberg.spark.SparkCatalog",
+      "spark.sql.catalog.sa_catalog.type": "rest",
+      "spark.sql.catalog.sa_catalog.uri": "https://biglake.googleapis.com/iceberg/v1/restcatalog",
+      "spark.sql.catalog.sa_catalog.warehouse": "bl://projects/${GCP_PROJECT}/catalogs/sa_catalog",
+      "spark.sql.catalog.sa_catalog.io-impl": "org.apache.iceberg.gcp.gcs.GCSFileIO",
+      "spark.sql.catalog.sa_catalog.header.x-goog-user-project": "${GCP_PROJECT}",
+      "spark.sql.catalog.sa_catalog.rest.auth.type": "org.apache.iceberg.gcp.auth.GoogleAuthManager",
+      "spark.dataproc.driverEnv.GCP_PROJECT": "${GCP_PROJECT}",
+      "spark.dataproc.driverEnv.ICEBERG_CATALOG": "sa_catalog",
+      "spark.dynamicAllocation.maxExecutors": "2"
+    }
+  },
+  "environment_config": {
+    "execution_config": {
+      "service_account": "sa-spark-runner@${GCP_PROJECT}.iam.gserviceaccount.com",
+      "subnetwork_uri": "sa-dataproc"
+    }
+  },
+  "labels": {
+    "app": "sportsagentic",
+    "job": "${JOB}"
+  }
+}

@@ -36,6 +36,7 @@ GAME_SUMMARIES = "gold.game_summaries"
 USAGE = "gold.agent_usage_daily"
 AGENT_REQUESTS = "silver.agent_requests"
 GOLD_TABLES = (TEAM_WEEKLY, GAME_SUMMARIES, USAGE)
+SEASON_TABLES = (TEAM_WEEKLY, GAME_SUMMARIES)  # replaced per season; USAGE is replaced per day
 # Highest silver _ingested_at (microseconds) the last default build consumed; on game_summaries.
 WATERMARK = "sa.build_gold.silver_watermark"
 ROUND_DOUBLES = 9
@@ -200,21 +201,23 @@ def agent_usage_daily(spark, days, catalog: str = DEFAULT_CATALOG) -> DataFrame:
     )
 
 
-def build_seasons(spark, seasons, catalog: str = DEFAULT_CATALOG) -> dict:
-    """Replace the given seasons in team_efficiency_weekly and game_summaries."""
+def build_seasons(spark, seasons, catalog: str = DEFAULT_CATALOG, tables=SEASON_TABLES) -> dict:
+    """Replace the given seasons in team_efficiency_weekly and game_summaries (those in ``tables``)."""
     if not seasons:
         return {}
     slice_filter = f"season IN ({_in(seasons)})"
-    return {
-        TEAM_WEEKLY: sync_rows(
+    out = {}
+    if TEAM_WEEKLY in tables:
+        out[TEAM_WEEKLY] = sync_rows(
             spark, table(TEAM_WEEKLY, catalog), team_efficiency_weekly(spark, seasons, catalog),
             ["team_id", "season", "week", "season_type"], slice_filter=slice_filter, round_doubles=ROUND_DOUBLES,
-        ),
-        GAME_SUMMARIES: sync_rows(
+        )
+    if GAME_SUMMARIES in tables:
+        out[GAME_SUMMARIES] = sync_rows(
             spark, table(GAME_SUMMARIES, catalog), game_summaries(spark, seasons, catalog),
             ["game_id"], slice_filter=slice_filter, prune=["season"], round_doubles=ROUND_DOUBLES,
-        ),
-    }
+        )
+    return out
 
 
 def build_days(spark, days, catalog: str = DEFAULT_CATALOG) -> dict:
