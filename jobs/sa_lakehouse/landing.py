@@ -394,11 +394,18 @@ RAW_REJECT_CHARS = 65536
 
 def explode_payload(bronze: DataFrame, record_schema: T.StructType, *, table_name: str, source: str):
     """Explode bronze ``response_json`` arrays into one row per record (struct column ``r``,
-    plus the bronze columns). Returns (records, rejects for files that are not a JSON array)."""
+    plus the bronze columns except ``response_json``). Returns (records, rejects for files that
+    are not a JSON array).
+
+    ``response_json`` is the whole response body (a week of plays is tens of MB). Carrying it
+    onto every exploded record copies it thousands of times per file and runs executors out of
+    heap, so it is dropped in the same projection as the explode.
+    """
     from .rejects import reject_rows
 
     parsed = bronze.withColumn("__arr", F.from_json("response_json", T.ArrayType(record_schema)))
-    records = parsed.where("__arr IS NOT NULL").withColumn("r", F.explode("__arr")).drop("__arr")
+    keep = [c for c in bronze.columns if c != "response_json"]
+    records = parsed.where("__arr IS NOT NULL").select(*keep, F.explode("__arr").alias("r"))
     bad = reject_rows(
         parsed.where("__arr IS NULL"),
         table_name=table_name,
