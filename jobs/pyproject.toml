@@ -1,0 +1,16 @@
+[project]
+name = "sa-lakehouse"
+version = "0.1.0"
+description = "SportsAgentic lakehouse Spark jobs (Iceberg on the BigLake REST catalog)"
+requires-python = ">=3.10"
+# Run time: PySpark (provided by Serverless for Apache Spark or the drain image) and the
+# standard library only.
+dependencies = []
+
+[project.optional-dependencies]
+test = ["pytest>=8"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+pythonpath = ["."]
+addopts = "-ra"

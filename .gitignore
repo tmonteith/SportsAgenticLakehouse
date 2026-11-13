@@ -36,3 +36,6 @@ application_default_credentials.json
 .idea/
 .vscode/
 .DS_Store
+
+# Local test jars
+.cache/
