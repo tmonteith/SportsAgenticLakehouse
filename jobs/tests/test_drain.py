@@ -2,7 +2,7 @@ import json
 from datetime import datetime
 
 import pytest
-from drain_support import empty_kafka_df, fixture_lines, kafka_df, merge_games
+from drain_support import empty_kafka_df, fixture_lines, kafka_df
 
 import drain
 from sa_lakehouse.config import settings_from_env, table
@@ -20,7 +20,7 @@ def tables(clean_catalog):
 
 def _live(spark, values, start_offset=0, batch_id=0):
     df = kafka_df(spark, LIVE, values, key_field="game_id", start_offset=start_offset)
-    return drain.process_live_games_batch(spark, df, batch_id, merge_games=merge_games)
+    return drain.process_live_games_batch(spark, df, batch_id)
 
 
 def _refresh(spark):
@@ -112,7 +112,7 @@ def test_empty_batches_write_no_snapshot(tables):
     _live(spark, fixture_lines("live_games.jsonl"))
     drain.process_agent_events_batch(spark, kafka_df(spark, AGENT, fixture_lines("agent_events.jsonl")), 0)
     before = _snapshots(spark)
-    assert drain.process_live_games_batch(spark, empty_kafka_df(spark), 1, merge_games=merge_games)["empty"]
+    assert drain.process_live_games_batch(spark, empty_kafka_df(spark), 1)["empty"]
     assert drain.process_agent_events_batch(spark, empty_kafka_df(spark), 1)["empty"]
     assert _snapshots(spark) == before
 
@@ -148,7 +148,6 @@ def test_main_fails_without_kafka(monkeypatch, capsys):
 def test_available_now_stream_wiring(tables, tmp_path):
     """The real foreachBatch/availableNow/checkpoint path, with a parquet file source shaped
     like the Kafka source (scripts/test.sh has no Kafka jar or broker)."""
-    from functools import partial
 
     from drain_support import KAFKA_SCHEMA
 
@@ -156,7 +155,7 @@ def test_available_now_stream_wiring(tables, tmp_path):
     src, ckpt = tmp_path / "src", str(tmp_path / "ckpt")
     lines = fixture_lines("live_games.jsonl")
     spec = drain.STREAMS["live_game_events"]
-    process = partial(drain.process_live_games_batch, merge_games=merge_games)
+    process = drain.process_live_games_batch
 
     def run():
         stats = {}

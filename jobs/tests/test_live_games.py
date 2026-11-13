@@ -92,9 +92,3 @@ def test_record_hash_ignores_metadata_and_tracks_business_columns(spark):
     c = _msg(1, fetched_at="2026-11-13T01:05:00Z", clock="01:00")
     h = [live_games.parse_live_games(_bronze(spark, [m]))[0].select("_record_hash").first()[0] for m in (a, b, c)]
     assert h[0] == h[1] != h[2]
-    # Canonical JSON: sorted keys, nulls kept.
-    df = spark.range(1).select(F.lit(None).cast("int").alias("b"), F.lit(1).alias("a"))
-    import hashlib
-
-    expected = hashlib.sha256(b'{"a":1,"b":null}').hexdigest()
-    assert df.select(live_games.record_hash(["b", "a"])).first()[0] == expected

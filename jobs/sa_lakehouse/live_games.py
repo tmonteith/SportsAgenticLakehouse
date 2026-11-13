@@ -16,6 +16,8 @@ from pyspark.sql import Column, DataFrame, Window
 from pyspark.sql import functions as F
 from pyspark.sql import types as T
 
+from .hashing import with_record_hash
+
 SOURCE = "kafka:cfb.live_games"
 TABLE_NAME = "silver.games"
 
@@ -74,22 +76,6 @@ MESSAGE_SCHEMA = T.StructType(
     ]
 )
 _PARSE_SCHEMA = T.StructType(MESSAGE_SCHEMA.fields + [T.StructField(CORRUPT, T.StringType())])
-
-_RFC3339_UTC = "yyyy-MM-dd'T'HH:mm:ss.SSSSSSXXX"
-
-
-def record_hash(columns: list[str]) -> Column:
-    """``_record_hash`` per contract H4: SHA-256 of the business columns as canonical JSON.
-
-    Sorted keys, no whitespace, timestamps as RFC 3339 UTC, nulls kept. This is the one
-    place the drain hashes rows; point it at ``sa_lakehouse.hashing`` (WS4a) at integration.
-    """
-    payload = F.to_json(
-        F.struct(*[F.col(c) for c in sorted(columns)]),
-        {"ignoreNullFields": "false", "timestampFormat": _RFC3339_UTC},
-    )
-    return F.sha2(payload, 256)
-
 
 def clock_seconds(clock: Column) -> Column:
     """``"MM:SS"`` -> seconds; null when absent or not in that form."""
@@ -173,10 +159,10 @@ def parse_live_games(bronze: DataFrame) -> tuple[DataFrame, DataFrame]:
 
     valid = rows.filter(F.col("_reason").isNull())
     latest = Window.partitionBy("game_id").orderBy(F.col("_fetched_at").desc(), F.col("_kafka_offset").desc())
-    updates = (
+    latest_rows = (
         valid.withColumn("_rn", F.row_number().over(latest))
         .filter("_rn = 1")
-        .withColumn("_record_hash", record_hash(BUSINESS_COLUMNS))
-        .select(*GAMES_COLUMNS)
+        .select(*[c for c in GAMES_COLUMNS if c != "_record_hash"])
     )
+    updates = with_record_hash(latest_rows).select(*GAMES_COLUMNS)
     return updates, rejects

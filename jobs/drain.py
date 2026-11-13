@@ -32,6 +32,8 @@ from dataclasses import dataclass
 from typing import Callable
 
 from sa_lakehouse import agent_events, live_games
+from sa_lakehouse.games import merge_games as _merge_games
+from sa_lakehouse.rejects import write_rejects
 from sa_lakehouse.config import DEFAULT_CATALOG, Settings, build_spark, catalog_conf, settings_from_env, table
 from sa_lakehouse.tables import ensure_tables
 
@@ -109,25 +111,7 @@ def append_bronze(spark, bronze_df, bronze_table: str) -> int:
     return rows
 
 
-def append_rejects(rejects_df, catalog: str = DEFAULT_CATALOG) -> int:
-    rejects_df = rejects_df.cache()
-    try:
-        n = rejects_df.count()
-        if n:
-            rejects_df.writeTo(table("silver._rejects", catalog)).append()
-        return n
-    finally:
-        rejects_df.unpersist()
-
-
 # ---- foreachBatch functions ----------------------------------------------------------------
-
-
-def _default_merge_games():
-    # WS4a's sa_lakehouse.games is the only writer of silver.games (contract H5).
-    from sa_lakehouse.games import merge_games
-
-    return merge_games
 
 
 def process_live_games_batch(
@@ -145,10 +129,10 @@ def process_live_games_batch(
         try:
             result["silver_rows"] = updates.count()
             if result["silver_rows"]:
-                (merge_games or _default_merge_games())(spark, updates, mode="live")
+                (merge_games or _merge_games)(spark, updates, mode="live", catalog=catalog)
         finally:
             updates.unpersist()
-        result["rejects"] = append_rejects(rejects, catalog)
+        result["rejects"] = write_rejects(spark, rejects, catalog)
         return result
     finally:
         bronze.unpersist()
@@ -172,7 +156,7 @@ def process_agent_events_batch(
             )
         finally:
             events.unpersist()
-        result["rejects"] = append_rejects(rejects, catalog)
+        result["rejects"] = write_rejects(spark, rejects, catalog)
         return result
     finally:
         bronze.unpersist()
