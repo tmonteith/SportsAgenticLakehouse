@@ -63,14 +63,14 @@ TABLES: dict[str, TableDef] = {
   week INT,
   season_type STRING,
   response_json STRING NOT NULL,
-  _file_name STRING NOT NULL,
+  _landing_file STRING NOT NULL,
   _ingested_at TIMESTAMP NOT NULL""",
             partition="days(fetched_at)",
         ),
         TableDef(
             "bronze._load_state",
             """
-  _file_name STRING NOT NULL,
+  _landing_file STRING NOT NULL,
   endpoint STRING,
   params_hash STRING,
   fetched_at TIMESTAMP,

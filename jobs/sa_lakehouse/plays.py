@@ -95,8 +95,8 @@ def plays_payload(bronze: DataFrame) -> tuple[DataFrame, DataFrame]:
 def latest_response_per_game(records: DataFrame) -> DataFrame:
     """Keep, per game, only the records of its latest landed response."""
     w = Window.partitionBy(F.col("r.gameId"))
-    newest = F.max(F.struct("fetched_at", "_file_name")).over(w)
-    return records.withColumn("__newest", newest).where(F.struct("fetched_at", "_file_name") == F.col("__newest")).drop("__newest")
+    newest = F.max(F.struct("fetched_at", "_landing_file")).over(w)
+    return records.withColumn("__newest", newest).where(F.struct("fetched_at", "_landing_file") == F.col("__newest")).drop("__newest")
 
 
 def game_team_names(spark, seasons: list[int], catalog: str = DEFAULT_CATALOG) -> DataFrame:
@@ -105,7 +105,7 @@ def game_team_names(spark, seasons: list[int], catalog: str = DEFAULT_CATALOG) -
     if seasons:
         bronze = bronze.where(F.col("season").isin(seasons))
     records, _ = explode_payload(bronze, GAME_PAYLOAD, table_name=GAMES, source="cfbd:games")
-    w = Window.partitionBy(F.col("r.id")).orderBy(F.col("fetched_at").desc(), F.col("_file_name").desc())
+    w = Window.partitionBy(F.col("r.id")).orderBy(F.col("fetched_at").desc(), F.col("_landing_file").desc())
     return (
         records.withColumn("__rn", F.row_number().over(w))
         .where("__rn = 1")
