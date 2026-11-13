@@ -49,3 +49,36 @@ def test_catalog_conf_matches_contract():
 def test_settings_require_project():
     with pytest.raises(RuntimeError):
         settings_from_env({})
+
+
+# BigQuery reserves these column-name prefixes (case-insensitive), and the BigLake catalog
+# rejects a CreateTable whose schema uses one with a bare 400 INVALID_ARGUMENT.
+BQ_RESERVED_PREFIXES = (
+    "_TABLE_", "_FILE_", "_PARTITION", "_ROW_TIMESTAMP", "__ROOT__", "_COLIDENTIFIER",
+    "_CHANGE_SEQUENCE_NUMBER", "_CHANGE_TYPE", "_CHANGE_TIMESTAMP",
+)
+
+
+def test_no_bigquery_reserved_column_names(clean_catalog):
+    spark = clean_catalog
+    ensure_tables(spark)
+
+    def names(dtype, prefix=""):
+        from pyspark.sql.types import ArrayType, MapType, StructType
+
+        if isinstance(dtype, StructType):
+            for f in dtype.fields:
+                yield prefix + f.name, f.name
+                yield from names(f.dataType, prefix + f.name + ".")
+        elif isinstance(dtype, ArrayType):
+            yield from names(dtype.elementType, prefix)
+        elif isinstance(dtype, MapType):
+            yield from names(dtype.valueType, prefix)
+
+    bad = [
+        f"{t}.{path}"
+        for t in TABLES
+        for path, leaf in names(spark.table(table(t)).schema)
+        if leaf.upper().startswith(BQ_RESERVED_PREFIXES)
+    ]
+    assert bad == []

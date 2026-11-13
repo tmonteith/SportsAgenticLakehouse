@@ -58,8 +58,8 @@ def load_go_aliases() -> dict[str, str]:
 
 def latest_response_per_season(bronze: DataFrame) -> DataFrame:
     w = Window.partitionBy("season")
-    newest = F.max(F.struct("fetched_at", "_file_name")).over(w)
-    return bronze.withColumn("__newest", newest).where(F.struct("fetched_at", "_file_name") == F.col("__newest")).drop("__newest")
+    newest = F.max(F.struct("fetched_at", "_landing_file")).over(w)
+    return bronze.withColumn("__newest", newest).where(F.struct("fetched_at", "_landing_file") == F.col("__newest")).drop("__newest")
 
 
 def map_teams(spark, records: DataFrame, go_aliases: dict[str, str]) -> DataFrame:

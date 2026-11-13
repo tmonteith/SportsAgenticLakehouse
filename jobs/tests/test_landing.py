@@ -29,7 +29,7 @@ def test_load_is_idempotent(clean_catalog, tmp_path):
     assert (g.season, g.week, g.season_type) == (2025, 1, "regular")
     assert g.params == "seasonType=regular&week=1&year=2025"
     assert g.fetched_at == datetime(2025, 9, 1, 3, 30)
-    assert g._file_name.endswith("games/season=2025/week=01/20250901T033000Z.json.gz")
+    assert g._landing_file.endswith("games/season=2025/week=01/20250901T033000Z.json.gz")
     assert rows["teams"].params == "year=2025" and rows["teams"].week is None
     assert rows["plays"].season_type is None  # plays payload has no seasonType; object metadata has it on GCS
     state = spark.table("sa_catalog.bronze._load_state").collect()

@@ -44,7 +44,7 @@ FILE_TS_FORMAT = "%Y%m%dT%H%M%SZ"
 
 @dataclass(frozen=True)
 class LandingFile:
-    path: str  # full URI as the FileSystem lists it; stored as _file_name
+    path: str  # full URI as the FileSystem lists it; stored as _landing_file
     rel: str  # <endpoint>/season=YYYY/week=WW/<ts>.json.gz
     endpoint: str
     season: int
@@ -141,7 +141,7 @@ def file_record(lf: LandingFile, meta: dict[str, str] | None) -> dict:
         q = dict(parse_qsl(params, keep_blank_values=True))
         return {
             "rel": lf.rel,
-            "_file_name": lf.path,
+            "_landing_file": lf.path,
             "endpoint": meta["endpoint"],
             "params": params,
             "params_hash": meta.get("params_hash") or hashlib.sha256(params.encode()).hexdigest(),
@@ -154,7 +154,7 @@ def file_record(lf: LandingFile, meta: dict[str, str] | None) -> dict:
         }
     return {
         "rel": lf.rel,
-        "_file_name": lf.path,
+        "_landing_file": lf.path,
         "endpoint": lf.endpoint,
         "params": None,
         "params_hash": None,
@@ -180,7 +180,7 @@ def derived_params(season: int, week: int | None, season_type: str | None) -> st
 FILE_SCHEMA = T.StructType(
     [
         T.StructField("rel", T.StringType(), False),
-        T.StructField("_file_name", T.StringType(), False),
+        T.StructField("_landing_file", T.StringType(), False),
         T.StructField("endpoint", T.StringType(), False),
         T.StructField("params", T.StringType()),
         T.StructField("params_hash", T.StringType()),
@@ -226,7 +226,7 @@ def _bronze_rows(files_df: DataFrame, contents: DataFrame, ingested_at: datetime
         F.col("week"),
         season_type.alias("season_type"),
         F.col("response_json"),
-        F.col("_file_name"),
+        F.col("_landing_file"),
         F.lit(ingested_at).cast("timestamp").alias("_ingested_at"),
     )
 
@@ -272,7 +272,7 @@ def load_landing(
     if not files:
         return summary
 
-    known = {r[0] for r in spark.table(state_t).select("_file_name").collect()}
+    known = {r[0] for r in spark.table(state_t).select("_landing_file").collect()}
     new = [f for f in files if f.path not in known]
     summary["already_loaded"] = len(files) - len(new)
     if not new:
@@ -285,17 +285,17 @@ def load_landing(
     in_bronze = (
         spark.table(raw_t)
         .where(F.col("fetched_at").between(F.lit(lo), F.lit(hi)))
-        .where(F.col("_file_name").isin(names))
-        .select("_file_name", "endpoint", "params_hash", "fetched_at", _record_count().cast("int").alias("rows"))
-        .dropDuplicates(["_file_name"])
+        .where(F.col("_landing_file").isin(names))
+        .select("_landing_file", "endpoint", "params_hash", "fetched_at", _record_count().cast("int").alias("rows"))
+        .dropDuplicates(["_landing_file"])
     )
     repaired = in_bronze.collect()
     if repaired:
         spark.createDataFrame(
-            [(r["_file_name"], r["endpoint"], r["params_hash"], r["fetched_at"], r["rows"], ingested_at) for r in repaired],
+            [(r["_landing_file"], r["endpoint"], r["params_hash"], r["fetched_at"], r["rows"], ingested_at) for r in repaired],
             spark.table(state_t).schema,
         ).writeTo(state_t).append()
-        done = {r["_file_name"] for r in repaired}
+        done = {r["_landing_file"] for r in repaired}
         new = [f for f in new if f.path not in done]
         summary["repaired"] = len(repaired)
         if not new:
@@ -310,9 +310,9 @@ def load_landing(
     try:
         bronze.writeTo(raw_t).append()
         state = files_df.join(
-            bronze.select("_file_name", "params_hash", _record_count().alias("rows")), "_file_name", "left"
+            bronze.select("_landing_file", "params_hash", _record_count().alias("rows")), "_landing_file", "left"
         ).select(
-            "_file_name",
+            "_landing_file",
             "endpoint",
             F.coalesce(bronze["params_hash"], files_df["params_hash"]).alias("params_hash"),
             "fetched_at",
@@ -355,7 +355,7 @@ def explode_payload(bronze: DataFrame, record_schema: T.StructType, *, table_nam
         parsed.where("__arr IS NULL"),
         table_name=table_name,
         reason="invalid_payload",
-        record_key=F.col("_file_name"),
+        record_key=F.col("_landing_file"),
         raw=F.substring("response_json", 1, RAW_REJECT_CHARS),
         source=source,
         fetched_at="fetched_at",
