@@ -122,6 +122,7 @@ def build_games(spark, bronze: DataFrame, catalog: str = DEFAULT_CATALOG) -> tup
             source=SOURCE,
         ).unionByName(bad)
         result = merge_games(spark, good, "batch", catalog)
+        rejects = rejects.localCheckpoint()  # materialize before the cache goes away
     finally:
         mapped.unpersist()
     result["input_rows"] = input_rows
