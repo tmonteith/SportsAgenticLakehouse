@@ -1,0 +1,130 @@
+[
+ {
+  "id": 2120,
+  "school": "Central Washington",
+  "mascot": "Wildcats",
+  "abbreviation": "CWAU",
+  "alternateNames": [
+   "CWAU",
+   "C Washington"
+  ],
+  "conference": "Lone Star",
+  "division": null,
+  "classification": "ii",
+  "color": "#000000",
+  "alternateColor": "#null",
+  "twitter": null
+ },
+ {
+  "id": 11,
+  "school": "Colorado Mesa",
+  "mascot": "Mavericks",
+  "abbreviation": "COMU",
+  "alternateNames": [
+   "COMU",
+   "Colorado Mesa"
+  ],
+  "conference": "Rocky Mountain",
+  "division": null,
+  "classification": "ii",
+  "color": "#000000",
+  "alternateColor": "#null",
+  "twitter": null
+ },
+ {
+  "id": 2222,
+  "school": "Ferris State",
+  "mascot": "Bulldogs",
+  "abbreviation": "FRST",
+  "alternateNames": [
+   "FRST",
+   "Ferris St"
+  ],
+  "conference": "GLIAC",
+  "division": null,
+  "classification": "ii",
+  "color": "#000000",
+  "alternateColor": "#null",
+  "twitter": null
+ },
+ {
+  "id": 2450,
+  "school": "Norfolk State",
+  "mascot": "Spartans",
+  "abbreviation": "NORF",
+  "alternateNames": [
+   "NORF",
+   "Norfolk St"
+  ],
+  "conference": "MEAC",
+  "division": null,
+  "classification": "fcs",
+  "color": "#0c8968",
+  "alternateColor": "#fdb813",
+  "twitter": "@NSU_FB"
+ },
+ {
+  "id": 195,
+  "school": "Ohio",
+  "mascot": "Bobcats",
+  "abbreviation": "OHIO",
+  "alternateNames": [
+   "OHIO",
+   "Ohio"
+  ],
+  "conference": "Mid-American",
+  "division": null,
+  "classification": "fbs",
+  "color": "#024230",
+  "alternateColor": "#ffffff",
+  "twitter": "@OhioFootball"
+ },
+ {
+  "id": 90,
+  "school": "Pittsburg State",
+  "mascot": "Gorillas",
+  "abbreviation": "PTSU",
+  "alternateNames": [
+   "PTSU",
+   "Pittsburg St"
+  ],
+  "conference": "Mid America",
+  "division": null,
+  "classification": "ii",
+  "color": "#000000",
+  "alternateColor": "#null",
+  "twitter": null
+ },
+ {
+  "id": 164,
+  "school": "Rutgers",
+  "mascot": "Scarlet Knights",
+  "abbreviation": "RUTG",
+  "alternateNames": [
+   "RUTG",
+   "Rutgers"
+  ],
+  "conference": "Big Ten",
+  "division": null,
+  "classification": "fbs",
+  "color": "#ce0e2d",
+  "alternateColor": "#ffffff",
+  "twitter": "@Rfootball"
+ },
+ {
+  "id": 119,
+  "school": "Towson",
+  "mascot": "Tigers",
+  "abbreviation": "TOW",
+  "alternateNames": [
+   "TOW",
+   "Towson"
+  ],
+  "conference": "Coastal Athletic",
+  "division": null,
+  "classification": "fcs",
+  "color": "#FFC229",
+  "alternateColor": "#null",
+  "twitter": "@Towson_FB"
+ }
+]
