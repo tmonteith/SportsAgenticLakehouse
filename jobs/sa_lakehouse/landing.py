@@ -9,8 +9,8 @@ One run: list the landing root through the Hadoop FileSystem (GCS connector on S
 ``file://`` in tests), drop files already in ``bronze._load_state``, read each new file whole
 (Spark decompresses ``.gz``), and append one bronze row per file plus one state row per file.
 
-Object metadata is read through the GCS connector. Where it is unavailable (local files, or a
-connector without the API) the same values are derived from the object name and the payload:
+Object metadata is read with one GCS JSON API list call (standard library, token from the
+metadata server on Serverless). Where it is unavailable (local files, no metadata server) the same values are derived from the object name and the payload:
 ``fetched_at`` from the file name, ``season``/``week`` from the path, ``seasonType`` from the
 first record when the payload carries it, ``http_status`` null. The summary counts both cases.
 """
@@ -18,10 +18,12 @@ first record when the payload carries it, ``http_status`` null. The summary coun
 from __future__ import annotations
 
 import hashlib
+import json
 import re
 from dataclasses import dataclass
 from datetime import date, datetime, timezone
-from urllib.parse import parse_qsl, urlencode
+from urllib.parse import parse_qsl, quote, urlencode, urlparse
+from urllib.request import Request, urlopen
 
 from pyspark.sql import DataFrame
 from pyspark.sql import functions as F
@@ -91,29 +93,60 @@ def list_landing(spark, root: str) -> tuple[list[LandingFile], int]:
     return files, ignored
 
 
-def gcs_object_metadata(spark, root: str, paths: list[str]) -> dict[str, dict[str, str]]:
-    """Custom metadata of GCS objects through the GCS connector; {} when not on GCS or unavailable."""
-    _, fs = _filesystem(spark, root)
+GCS_LIST_URL = "https://storage.googleapis.com/storage/v1/b/{bucket}/o"
+TOKEN_URL = "http://metadata.google.internal/computeMetadata/v1/instance/service-accounts/default/token"
+
+
+def _http_json(url: str, headers: dict[str, str], timeout: float = 30.0) -> dict:
+    with urlopen(Request(url, headers=headers), timeout=timeout) as resp:  # noqa: S310 - fixed https/metadata URLs
+        return json.loads(resp.read().decode("utf-8"))
+
+
+def metadata_server_token(fetch=_http_json) -> str | None:
+    """Access token of the batch service account from the metadata server (Serverless), or None."""
     try:
-        if fs.getScheme() != "gs":
-            return {}
-        gcsfs = fs.getGcsFs()
-    except Exception:  # noqa: BLE001 - connector without the API: derive instead
+        return fetch(TOKEN_URL, {"Metadata-Flavor": "Google"}, 5.0).get("access_token")
+    except Exception:  # noqa: BLE001 - not on GCP: derive instead
+        return None
+
+
+def list_gcs_metadata(bucket: str, prefix: str, token: str, fetch=_http_json) -> dict[str, dict[str, str]]:
+    """``{gs://bucket/name: custom metadata}`` for every object under ``prefix``.
+
+    One JSON API list (``fields=items(name,metadata),nextPageToken``), the same call the
+    extractor makes. The GCS connector cannot be used for this: it base64-decodes custom
+    metadata values (its own convention) and fails on the extractor's plain strings.
+    """
+    out: dict[str, dict[str, str]] = {}
+    page = None
+    while True:
+        q = {"prefix": prefix, "fields": "items(name,metadata),nextPageToken", "maxResults": "1000"}
+        if page:
+            q["pageToken"] = page
+        body = fetch(GCS_LIST_URL.format(bucket=quote(bucket, safe="")) + "?" + urlencode(q), {"Authorization": f"Bearer {token}"})
+        for item in body.get("items", []):
+            out[f"gs://{bucket}/{item['name']}"] = dict(item.get("metadata") or {})
+        page = body.get("nextPageToken")
+        if not page:
+            return out
+
+
+def gcs_object_metadata(spark, root: str, paths: list[str], fetch=_http_json) -> dict[str, dict[str, str]]:
+    """Custom metadata of the given landing objects; {} when not on GCS or the API is unreachable."""
+    parsed = urlparse(root)
+    if parsed.scheme != "gs" or not paths:
         return {}
-    out = {}
-    uri = spark._jvm.java.net.URI
-    for p in paths:
-        try:
-            attrs = gcsfs.getFileInfo(uri(p)).getAttributes()
-            meta = {}
-            for key in attrs.keySet():
-                value = attrs.get(key)
-                if value is not None:
-                    meta[str(key)] = bytes(value).decode("utf-8")
-            out[p] = meta
-        except Exception:  # noqa: BLE001
-            continue
-    return out
+    token = metadata_server_token(fetch)
+    if not token:
+        return {}
+    prefix = parsed.path.lstrip("/")
+    prefix = prefix + "/" if prefix and not prefix.endswith("/") else prefix
+    try:
+        listed = list_gcs_metadata(parsed.netloc, prefix, token, fetch)
+    except Exception as exc:  # noqa: BLE001 - derive instead, and say so
+        print(json.dumps({"event": "landing_metadata_unavailable", "error": type(exc).__name__}), flush=True)
+        return {}
+    return {p: listed[p] for p in paths if p in listed}
 
 
 def _parse_rfc3339(value: str | None) -> datetime | None:
@@ -242,10 +275,23 @@ def load_landing(
     since: date | None = None,
     catalog: str = DEFAULT_CATALOG,
     now: datetime | None = None,
+    reload: bool = False,
 ) -> dict:
-    """Load new landing files into bronze. Returns the summary dict."""
+    """Load new landing files into bronze. Returns the summary dict.
+
+    ``reload`` first deletes every row of ``bronze.api_responses_raw`` and ``bronze._load_state``
+    (in this run, before listing), so every landing file is loaded again. Use it when rows were
+    loaded with wrong metadata. Downstream jobs pick the new rows up by their newer ``_ingested_at``.
+    """
     ensure_tables(spark, [RAW, STATE], catalog)
     raw_t, state_t = table(RAW, catalog), table(STATE, catalog)
+    cleared = {}
+    if reload:
+        for t in (state_t, raw_t):
+            n = spark.table(t).count()
+            if n:
+                spark.sql(f"DELETE FROM {t}")
+            cleared[t] = n
     ingested_at = (now or datetime.now(timezone.utc)).astimezone(timezone.utc)
 
     files, ignored = list_landing(spark, root)
@@ -256,6 +302,8 @@ def load_landing(
 
     summary = {
         "landing_root": root,
+        "reload": reload,
+        "cleared_rows": cleared,
         "since": since.isoformat() if since else None,
         "listed": listed,
         "ignored": ignored,
